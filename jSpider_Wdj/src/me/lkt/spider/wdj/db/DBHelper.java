@@ -2,6 +2,7 @@ package me.lkt.spider.wdj.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -27,6 +28,14 @@ public class DBHelper {
 			if (mConn != null) {
 				mStam = mConn.createStatement();
 			}
+			String sql = "CREATE TABLE IF NOT EXISTS wdj_apps("
+					+ "'_id' INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ "'app_name' TEXT," + "'download_count' TEXT,"
+					+ "'size' TEXT," + "'category' TEXT,"
+					+ "'update_time' TEXT," + "'version' TEXT,"
+					+ "'request' TEXT," + "'package_name' TEXT,"
+					+ "'website' TEXT," + "'from' TEXT)";
+			execSql(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -60,10 +69,54 @@ public class DBHelper {
 	}
 
 	public boolean packageExists(String pkgName) {
-		return false;
+		boolean result = false;
+		if (pkgName != null) {
+			String sql = "select * from wdj_apps where package_name = '"
+					+ pkgName + "'";
+			try {
+				ResultSet set = mStam.executeQuery(sql);
+				if (set != null && set.first()) {
+					result = true;
+				}
+				if (set != null) {
+					set.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+		return result;
 	}
 
 	public void insertAppInfo(AppInfo ai) {
+		if (ai == null) {
+			return;
+		}
+		String sql = "INSERT INTO wdj_apps(app_name,download_count,size,category,update_time,version,request,package_name,website,from) "
+				+ "values("
+				+ ai.getApp_name()
+				+ ","
+				+ ai.getDownload_count()
+				+ ","
+				+ ai.getSize()
+				+ ","
+				+ ai.getCategory()
+				+ ","
+				+ ai.getUpdate_time()
+				+ ","
+				+ ai.getVersion()
+				+ ","
+				+ ai.getRequest()
+				+ ","
+				+ ai.getPackage_name()
+				+ ","
+				+ ai.getWebsite() + "," + ai.getFrom() + ")";
+		try {
+			mStam.execute(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

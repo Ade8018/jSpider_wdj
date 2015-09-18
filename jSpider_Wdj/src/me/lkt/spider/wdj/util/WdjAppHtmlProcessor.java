@@ -30,7 +30,7 @@ public class WdjAppHtmlProcessor {
 		mHrefs = new ArrayList<String>();
 	}
 
-	private AppInfo process(Document doc) {
+	private void process(Document doc) {
 		Node nodeHtml = doc.childNode(1);
 		Node nodeBody = getChildNodeWithTagAndClass(nodeHtml, "body", null, 0);
 		Node nodeDiv_classContainer = getChildNodeWithTagAndClass(nodeBody,
@@ -45,6 +45,7 @@ public class WdjAppHtmlProcessor {
 				nodeDiv_classAppInfo, "h1", "title", 0);
 		String appName = nodeP_classAppName.childNode(0).toString();
 		appName = StringUtil.clearUnexpected(appName);
+		mAppinfo.setApp_name(appName);
 
 		Node nodeDiv_classNumList = getChildNodeWithTagAndClass(
 				nodeDiv_classDetailTop, "div", "num-list", 0);
@@ -55,6 +56,7 @@ public class WdjAppHtmlProcessor {
 		String strCount = nodeI_ItemPropInteractionCount.childNode(0)
 				.toString();
 		strCount = StringUtil.clearUnexpected(strCount);
+		mAppinfo.setDownload_count(strCount);
 
 		Node nodeDiv_classColsClearFix = getChildNodeWithTagAndClass(
 				nodeDiv_classDetailWrap, "div", "cols clearfix", 0);
@@ -67,36 +69,44 @@ public class WdjAppHtmlProcessor {
 		Node nodeSize = nodeDL_classInfosList.childNode(3);
 		String strSize = nodeSize.childNode(0).toString();
 		strSize = StringUtil.clearUnexpected(strSize);
+		mAppinfo.setSize(strSize);
 
 		Node nodeCate = nodeDL_classInfosList.childNode(7);
 		String strCate = nodeCate.childNode(1).childNode(0).toString();
 		strCate = StringUtil.clearUnexpected(strCate);
+		mAppinfo.setCategory(strCate);
 
 		Node nodeUpdateTime = nodeDL_classInfosList.childNode(11);
 		String strUpdateTime = nodeUpdateTime.childNode(1).childNode(0)
 				.toString();
 		strUpdateTime = StringUtil.clearUnexpected(strUpdateTime);
+		mAppinfo.setUpdate_time(strUpdateTime);
 
 		Node nodeVersion = nodeDL_classInfosList.childNode(15);
 		String strVersion = nodeVersion.childNode(0).toString();
 		strVersion = StringUtil.clearUnexpected(strVersion);
+		mAppinfo.setVersion(strVersion);
 
 		Node nodeRequest = nodeDL_classInfosList.childNode(19);
 		String strRequest = nodeRequest.childNode(0).toString();
 		strRequest = StringUtil.clearUnexpected(strRequest);
+		mAppinfo.setRequest(strRequest);
 
 		Node nodePkgName = nodeDL_classInfosList.childNode(21);
 		String strPkgName = nodePkgName.childNode(3).childNode(0).toString();
 		strPkgName = StringUtil.clearUnexpected(strPkgName);
+		mAppinfo.setPackage_name(strPkgName);
 
 		Node nodeWebSite = nodeDL_classInfosList.childNode(25);
 		String strWebSite = nodeWebSite.childNode(3).childNode(1).childNode(0)
 				.toString();
 		strWebSite = StringUtil.clearUnexpected(strWebSite);
+		mAppinfo.setWebsite(strWebSite);
 
 		Node nodeFrom = nodeDL_classInfosList.childNode(29);
 		String strFrom = nodeFrom.childNode(0).toString();
 		strFrom = StringUtil.clearUnexpected(strFrom);
+		mAppinfo.setFrom(strFrom);
 
 		// ul class="side-list"
 		Node nodeUl_classSideListRela = getChildNodeWithTagAndClass(
@@ -121,7 +131,6 @@ public class WdjAppHtmlProcessor {
 				}
 			}
 		}
-		return null;
 	}
 
 	private static Node getChildNodeWithTagAndClass(Node nodeHtml, String tag,
@@ -160,14 +169,13 @@ public class WdjAppHtmlProcessor {
 		return null;
 	}
 
-	public AppInfo process(String url) {
+	public void process(String url) {
 		mAppinfo = new AppInfo();
 		mHrefs = new ArrayList<String>();
 		String html = getUrlHtml(url);
 		if (html != null) {
-			return process(Jsoup.parse(html));
+			process(Jsoup.parse(html));
 		}
-		return null;
 	}
 
 	private String getUrlHtml(String url) {
